@@ -1,38 +1,23 @@
 pub mod day1 {
-    pub fn run() {
+    pub fn run(kombinations: usize, target: i32) {
         use lazy_static::lazy_static;
-        // Parse input
+        use itertools::Itertools;
+
         lazy_static! {
             static ref INPUT: String =
                 std::fs::read_to_string("data/input-day-1.txt").unwrap();
         }
 
         let input_lines: Vec<i32> = INPUT.lines().map(|s| s.parse().unwrap()).collect();
-        let result = subsetsum(input_lines, 2020);
+        let result = input_lines.into_iter().combinations(kombinations).find(|v| v.iter().sum::<i32>() == target);
 
-        println!("{:?}", result)
-    }
-    
-    fn subsetsum(arr:Vec<i32>, sum:i32) -> Option<Vec<i32>> {
-        if arr.iter().sum() == sum {
-            Some(arr)
-        } else if arr.len() > 1 {
-            let end = arr.len() - 1;
-            let mut slice = arr.as_slice();
-            slice = &slice[1..end];
+        let answer = result.clone().unwrap().into_iter().fold(1i32, |acc,val| acc * val);
 
-            for sub in slice {
-                let result = subsetsum(sub, sum)
-                match result {
-                    Some => Some(result)
-               }
-            }
-        } else {
-            None
-        }
+        println!("For combination ({}): {:?}, and the answer is {}", kombinations, result, answer)
     }
 }
 
 fn main() {
-    day1::run()
+    day1::run(2, 2020);
+    day1::run(3, 2020);
 }
