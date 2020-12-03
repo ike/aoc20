@@ -1,19 +1,53 @@
-pub mod day1 {
-    pub fn run(kombinations: usize, target: i32) {
+pub mod day3 {
+    pub fn run1() {
         use lazy_static::lazy_static;
-        use itertools::Itertools;
 
         lazy_static! {
-            static ref INPUT: String =
-                std::fs::read_to_string("data/input-day-1.txt").unwrap();
+            static ref INPUT: String = 
+                std::fs::read_to_string("data/input-day-3.txt").unwrap();
         }
 
-        let input_lines: Vec<i32> = INPUT.lines().map(|s| s.parse().unwrap()).collect();
-        let result = input_lines.into_iter().combinations(kombinations).find(|v| v.iter().sum::<i32>() == target);
+        let input_lines: Vec<Vec<char>> = INPUT.lines().map(|s| s.chars().collect()).collect();
 
-        let answer = result.clone().unwrap().into_iter().fold(1i32, |acc,val| acc * val);
+        println!("You hit {} trees", calc_trees(&input_lines, 3, 1));
+    }
 
-        println!("For combination ({}): {:?}, and the answer is {}", kombinations, result, answer)
+    pub fn run2() {
+        use lazy_static::lazy_static;
+
+        lazy_static! {
+            static ref INPUT: String = 
+                std::fs::read_to_string("data/input-day-3.txt").unwrap();
+        }
+
+        let input_lines: Vec<Vec<char>> = INPUT.lines().map(|s| s.chars().collect()).collect();
+
+        let slopes: [i32; 5] = [
+            calc_trees(&input_lines, 1, 1),
+            calc_trees(&input_lines, 3, 1),
+            calc_trees(&input_lines, 5, 1),
+            calc_trees(&input_lines, 7, 1),
+            calc_trees(&input_lines, 1, 2),
+        ];
+
+        println!("You hit {} trees", slopes.iter().fold(1i64, |acc, el| acc * i64::from(el.clone())));
+    }
+
+    fn calc_trees(lines: &Vec<Vec<char>>, slope_x: usize, slope_y: usize) -> i32 {
+        let mut result: i32 = 0;
+        let mut current_x = 0;
+        let mut current_y = 0;
+
+        while current_y < lines.len() {
+            let line = lines[current_y].clone();
+            let spot = line.iter().cycle().nth(current_x).unwrap();
+            if spot == &'#' {
+                result = result + 1;
+            }
+            current_y = current_y + slope_y;
+            current_x = current_x + slope_x;
+        }
+        return result
     }
 }
 
@@ -54,9 +88,30 @@ pub mod day2 {
     }
 }
 
+pub mod day1 {
+    pub fn run(kombinations: usize, target: i32) {
+        use lazy_static::lazy_static;
+        use itertools::Itertools;
+
+        lazy_static! {
+            static ref INPUT: String =
+                std::fs::read_to_string("data/input-day-1.txt").unwrap();
+        }
+
+        let input_lines: Vec<i32> = INPUT.lines().map(|s| s.parse().unwrap()).collect();
+        let result = input_lines.into_iter().combinations(kombinations).find(|v| v.iter().sum::<i32>() == target);
+
+        let answer = result.clone().unwrap().into_iter().fold(1i32, |acc,val| acc * val);
+
+        println!("For combination ({}): {:?}, and the answer is {}", kombinations, result, answer)
+    }
+}
+
 fn main() {
     day1::run(2, 2020);
     day1::run(3, 2020);
     day2::run(true);
     day2::run(false);
+    day3::run1();
+    day3::run2();
 }
