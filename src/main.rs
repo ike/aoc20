@@ -1,3 +1,59 @@
+pub mod day6 {
+    use std::{collections::HashSet, println};
+
+    pub fn run1() {
+        use lazy_static::lazy_static;
+
+        lazy_static! {
+            static ref INPUT: String = 
+                std::fs::read_to_string("data/input-day-6.txt").unwrap();
+        }
+
+        let answers: Vec<Vec<char>> = INPUT.split("\n\n")
+            .map(|s| 
+                s.replace("\n", "")
+                .chars()
+                .collect::<Vec<char>>()
+            )
+            .collect();
+
+        let mut count = 0;
+
+        for mut answer in answers {
+            answer.sort();
+            answer.dedup();
+            count = count + answer.len();
+        }
+
+        println!("total inclusive answers: {}", count)
+    }
+
+    pub fn run2() {
+        use lazy_static::lazy_static;
+
+        lazy_static! {
+            static ref INPUT: String = 
+                std::fs::read_to_string("data/input-day-6.txt").unwrap();
+        }
+
+        let answers: Vec<String> = INPUT.split("\n\n").map(|s| s.to_string() ).collect();
+
+        let mut count = 0;
+
+        for answer in answers {
+            let mut set: HashSet<char> = HashSet::new();
+            for list in answer.split("\n") {
+                set = set.intersection(list.chars()
+                    .collect::<HashSet<char>>()
+                ).collect();
+            }
+            count = count + set.len();
+        }
+
+        println!("total exclusive answers: {}", count)
+    }
+}
+
 pub mod day5 {
     pub fn run() {
         use lazy_static::lazy_static;
@@ -26,12 +82,12 @@ pub mod day5 {
 
     fn get_seat(id: &str) -> i32 {
         id.chars()
-          .map(|c| match c {
+            .map(|c| match c {
                 'F' | 'L' => 0,
                 'B' | 'R' => 1,
                 _ => panic!("Invalid char"),
-          })
-          .fold(0, |a, b| (a << 1) + b)
+            })
+            .fold(0, |a, b| (a << 1) + b)
     }
 }
 
@@ -245,4 +301,6 @@ fn main() {
     day3::run2();
     day4::run();
     day5::run();
+    day6::run1();
+    day6::run2();
 }
