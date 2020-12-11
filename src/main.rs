@@ -1,56 +1,43 @@
 pub mod day6 {
-    use std::{collections::HashSet, println};
-
-    pub fn run1() {
+    pub fn run() {
         use lazy_static::lazy_static;
+        use std::collections::HashMap;
 
         lazy_static! {
             static ref INPUT: String = 
-                std::fs::read_to_string("data/input-day-6.txt").unwrap();
+                std::fs::read_to_string("data/input-day-6.txt").unwrap().strip_suffix("\n").unwrap().to_string();
         }
 
-        let answers: Vec<Vec<char>> = INPUT.split("\n\n")
-            .map(|s| 
-                s.replace("\n", "")
-                .chars()
-                .collect::<Vec<char>>()
-            )
-            .collect();
+        let answers: Vec<Vec<&str>> = INPUT.split("\n\n").map(|s| s.split("\n").collect() ).collect();
 
-        let mut count = 0;
-
-        for mut answer in answers {
-            answer.sort();
-            answer.dedup();
-            count = count + answer.len();
-        }
-
-        println!("total inclusive answers: {}", count)
-    }
-
-    pub fn run2() {
-        use lazy_static::lazy_static;
-
-        lazy_static! {
-            static ref INPUT: String = 
-                std::fs::read_to_string("data/input-day-6.txt").unwrap();
-        }
-
-        let answers: Vec<String> = INPUT.split("\n\n").map(|s| s.to_string() ).collect();
-
-        let mut count = 0;
+        let mut inclusive_count = 0;
+        let mut exclusive_count = 0;
 
         for answer in answers {
-            let mut set: HashSet<char> = HashSet::new();
-            for list in answer.split("\n") {
-                set = set.intersection(list.chars()
-                    .collect::<HashSet<char>>()
-                ).collect();
+            let mut set: HashMap<char, i32> = HashMap::new();
+
+            for list in answer.clone() {
+                for c in list.chars() {
+                    let i = match set.get_mut(&c) {
+                        Some(a) => *a + 1,
+                        None => 1
+                    };
+
+                    *set.entry(c).or_insert(i) = i;
+                }
             }
-            count = count + set.len();
+
+            inclusive_count = inclusive_count + set.len();
+
+            for (_key, val) in set.iter() {
+                if *val == answer.len() as i32 {
+                    exclusive_count += 1;
+                }
+            }
         }
 
-        println!("total exclusive answers: {}", count)
+        println!("total inclusive answers: {}", inclusive_count);
+        println!("total exclusive answers: {}", exclusive_count);
     }
 }
 
@@ -301,6 +288,5 @@ fn main() {
     day3::run2();
     day4::run();
     day5::run();
-    day6::run1();
-    day6::run2();
+    day6::run();
 }
