@@ -5,10 +5,18 @@ pub mod day6 {
 
         lazy_static! {
             static ref INPUT: String = 
-                std::fs::read_to_string("data/input-day-6.txt").unwrap().strip_suffix("\n").unwrap().to_string();
+                std::fs::read_to_string("data/input-day-6.txt")
+                    .unwrap()
+                    .strip_suffix("\n")
+                    .unwrap()
+                    .to_string();
         }
 
-        let answers: Vec<Vec<&str>> = INPUT.split("\n\n").map(|s| s.split("\n").collect() ).collect();
+        let answers: Vec<Vec<&str>> = INPUT.split("\n\n")
+                                            .map(|s| 
+                                                s.split("\n")
+                                                .collect()
+                                            ).collect();
 
         let mut inclusive_count = 0;
         let mut exclusive_count = 0;
@@ -155,7 +163,12 @@ pub mod day4 {
                 std::fs::read_to_string("data/input-day-4.txt").unwrap();
         }
 
-        let passports: Vec<Passport> = INPUT.split("\n\n").map(|s| s.replace("\n", " ").parse().unwrap()).collect();
+        let passports: Vec<Passport> = INPUT.split("\n\n")
+                                            .map(|s| 
+                                                s.replace("\n", " ")
+                                                .parse()
+                                                .unwrap()
+                                            ).collect();
 
         let mut result = 0;
 
@@ -179,7 +192,11 @@ pub mod day3 {
                 std::fs::read_to_string("data/input-day-3.txt").unwrap();
         }
 
-        let input_lines: Vec<Vec<char>> = INPUT.lines().map(|s| s.chars().collect()).collect();
+        let input_lines: Vec<Vec<char>> = INPUT.lines()
+                                                .map(|s| 
+                                                    s.chars()
+                                                    .collect()
+                                                ).collect();
 
         println!("You hit {} trees", calc_trees(&input_lines, 3, 1));
     }
@@ -192,7 +209,11 @@ pub mod day3 {
                 std::fs::read_to_string("data/input-day-3.txt").unwrap();
         }
 
-        let input_lines: Vec<Vec<char>> = INPUT.lines().map(|s| s.chars().collect()).collect();
+        let input_lines: Vec<Vec<char>> = INPUT.lines()
+                                                .map(|s| 
+                                                    s.chars()
+                                                    .collect()
+                                                ).collect();
 
         let slopes: [i32; 5] = [
             calc_trees(&input_lines, 1, 1),
@@ -202,7 +223,12 @@ pub mod day3 {
             calc_trees(&input_lines, 1, 2),
         ];
 
-        println!("You hit {} trees", slopes.iter().fold(1i64, |acc, el| acc * i64::from(el.clone())));
+        println!("You hit {} trees", 
+            slopes.iter()
+            .fold(1i64, |acc, el| 
+                acc * i64::from(el.clone())
+            )
+        );
     }
 
     fn calc_trees(lines: &Vec<Vec<char>>, slope_x: usize, slope_y: usize) -> i32 {
@@ -238,11 +264,39 @@ pub mod day2 {
 
         for line in input_lines {
             
-            let min: usize = line.split_whitespace().nth(0).unwrap().split("-").nth(0).unwrap().parse().unwrap();
-            let max: usize = line.split_whitespace().nth(0).unwrap().split("-").nth(1).unwrap().parse().unwrap();
-            let rule: char = line.split_whitespace().nth(1).unwrap().chars().nth(0).unwrap().clone();
-            let pass: String = line.split_whitespace().nth(2).unwrap().to_ascii_lowercase();
-            let count: usize = pass.matches(rule).count();
+            let min: usize = line.split_whitespace()
+                                    .nth(0)
+                                    .unwrap()
+                                    .split("-")
+                                    .nth(0)
+                                    .unwrap()
+                                    .parse()
+                                    .unwrap();
+
+            let max: usize = line.split_whitespace()
+                                    .nth(0)
+                                    .unwrap()
+                                    .split("-")
+                                    .nth(1)
+                                    .unwrap()
+                                    .parse()
+                                    .unwrap();
+
+            let rule: char = line.split_whitespace()
+                                    .nth(1)
+                                    .unwrap()
+                                    .chars()
+                                    .nth(0)
+                                    .unwrap()
+                                    .clone();
+
+            let pass: String = line.split_whitespace()
+                                    .nth(2)
+                                    .unwrap()
+                                    .to_ascii_lowercase();
+
+            let count: usize = pass.matches(rule)
+                                    .count();
 
             if old {
                 if count >= min && count <= max {
@@ -270,10 +324,22 @@ pub mod day1 {
                 std::fs::read_to_string("data/input-day-1.txt").unwrap();
         }
 
-        let input_lines: Vec<i32> = INPUT.lines().map(|s| s.parse().unwrap()).collect();
-        let result = input_lines.into_iter().combinations(kombinations).find(|v| v.iter().sum::<i32>() == target);
+        let input_lines: Vec<i32> = INPUT.lines()
+                                            .map(|s| 
+                                                s.parse()
+                                                .unwrap()
+                                            ).collect();
 
-        let answer = result.clone().unwrap().into_iter().fold(1i32, |acc,val| acc * val);
+        let result = input_lines.into_iter()
+                                .combinations(kombinations)
+                                .find(|v| 
+                                    v.iter().sum::<i32>() == target
+                                );
+
+        let answer = result.clone()
+                            .unwrap()
+                            .into_iter()
+                            .fold(1i32, |acc,val| acc * val);
 
         println!("For combination ({}): {:?}, and the answer is {}", kombinations, result, answer)
     }
